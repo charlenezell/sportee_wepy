@@ -12,12 +12,13 @@ module.exports = {
   },
   eslint: true,
   compilers: {
-    less: {
-      compress: true
+    // less: {
+    //   compress: true
+    // },
+    sass: {
+      includePaths:['src/style/lib/']
+      // outputStyle: 'compressed'
     },
-    /*sass: {
-      outputStyle: 'compressed'
-    },*/
     babel: {
       sourceMap: true,
       presets: [
@@ -39,10 +40,10 @@ if (prod) {
 
   delete module.exports.compilers.babel.sourcesMap;
   // 压缩sass
-  // module.exports.compilers['sass'] = {outputStyle: 'compressed'}
+  module.exports.compilers['sass'] = {outputStyle: 'compressed'}
 
   // 压缩less
-  module.exports.compilers['less'] = {compress: true}
+  // module.exports.compilers['less'] = {compress: true}
 
   // 压缩js
   module.exports.plugins = {

@@ -1,0 +1,236 @@
+@mixin toe($isscroll:false) {
+  //文字省略?
+  overflow: hidden !important;
+  @if $isscroll==true {overflow-x: scroll !important;}
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+
+@mixin toeline($linenumb:1) {
+  display:block;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  -webkit-line-clamp: $linenumb;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+
+@mixin bgrgba($args...) {
+  @if type-of(nth($args, 1)) == "color" {
+    @at-root{
+      &{
+          background-color: rgba(nth($args, 1), nth($args, 2));
+      }
+    }
+  }
+
+  @if type-of(nth($args, 1)) == "number" {
+    @at-root{
+      &{
+        background-color: rgba(nth($args, 1), nth($args, 2), nth($args, 3), nth($args, 4));
+      }
+    }
+  }
+}
+
+@mixin clearfix {
+  display: block;
+
+  &:after {
+    content: "\20";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+    overflow: hidden;
+  }
+}
+
+@mixin triangle($direction, $size: 6px, $color: #222, $color2: transparent) {
+  content: '';
+  display: block;
+  position: absolute;
+  height: 0;
+  width: 0;
+  overflow: hidden;
+  border:0;
+  @if $direction == "up" {
+    border-bottom: $size solid $color;
+    border-left: (3 / 4 * $size) solid $color2;
+    border-right: (3 / 4 * $size) solid $color2;
+  }
+  @else if $direction == "down" {
+    border-top: $size solid $color;
+    border-left: (3 / 4 * $size) solid $color2;
+    border-right: (3 / 4 * $size) solid $color2;
+  }
+  @else if $direction == "left" {
+    border-top: (3 / 4 * $size) solid $color2;
+    border-bottom: (3 / 4 * $size) solid $color2;
+    border-right: $size solid $color;
+  }
+  @else if $direction == "right" {
+    border-top: (3 / 4 * $size) solid $color2;
+    border-bottom: (3 / 4 * $size) solid $color2;
+    border-left: $size solid $color;
+  }
+}
+
+@mixin noinlinespace {
+    font-size: 0;
+    -webkit-text-size-adjust:none;
+}
+
+@mixin pop01($basezIndex:1000,$overlayOpacity:0.5,$overlayColor:#000){
+//   <table class="hello__pop">
+//     <tr>
+//         <td class="hello__pop__td">
+//             <div class="hello__main">helloworld</div>
+//             <div class="hello__overlay"></div>
+//         </td>
+//     </tr>
+// </table>
+  &__pop{
+      width:100%;
+      height:100%;
+      @include overlay;
+      z-index: $basezIndex;
+  }
+  &__td{
+      vertical-align: middle;
+      text-align: center;
+          border: 0;
+  }
+  &__main{
+    display: inline-block;
+    position: relative;
+    z-index:2;
+  }
+  &__overlay{
+    @include overlay(false);
+    @include opacity($overlayOpacity);
+    z-index:1;
+    background-color: $overlayColor;
+  }
+}
+
+@mixin overlay($sss:true){
+  position: fixed;
+  _position: absolute;
+  width:100%;
+  height:100%;
+  _height:expression(document.compatMode&&'CSS1Compat'==document.compatMode?document.documentElement.clientHeight:document.body.clientHeight);
+  top:0;
+  left:0;
+  @if($sss){
+     _top:expression(new Function('return document.documentElement.scrollTop').call());
+  }
+}
+
+@mixin glasseffect01 {
+  @include unshiftClass(".csstransitions"){
+    overflow: hidden;
+    position: relative;
+    // {transition:500ms all ease;}
+
+    &:after {
+      content: "";
+      position: absolute;
+      height: 0px;
+      width: 500px;
+      transform: rotate(45deg);
+      top: 100%;
+      left: 0;
+      opacity: 0.5;
+      transform-origin: 0 0;
+      background-color: #fff;
+      transition: 500ms all ease;
+    }
+
+    &:before {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: #fff;
+      opacity: 0.3;
+      display: none;
+    }
+    &:hover:after{
+      height:500px;
+      top:-100%;
+      opacity:0;
+    }
+  };
+}
+
+
+@function defaultPx($n){
+  @return if(unitless($n),#{$n}px,$n);
+}
+
+@function strip-unit($number) {
+  @if type-of($number) == 'number' and not unitless($number) {
+    @return $number / ($number * 0 + 1);
+  }
+
+  @return $number;
+}
+
+@mixin posfix($x,$y,$coodinary:0){
+  $percent:if(unit($y)=="%","wh*"(strip-unit($y))/100,strip-unit($y));
+  position: fixed;
+  @if($coodinary==0){
+    left:defaultPx($x);
+    top:defaultPx($y);
+  }@else if($coodinary==1){
+    right:defaultPx($x);
+    top:defaultPx($y);
+  }@else if($coodinary==2){
+    right:defaultPx($x);
+    bottom:defaultPx($y);
+  }@else{
+    left:defaultPx($x);
+    bottom:defaultPx($y);
+  }
+}
+
+@mixin addCommonInnerBorder($width:1px,$color:#000,$opacity:0.1){
+  &{
+    position: relative;
+  }
+  &:after{
+    content:" ";
+    position: absolute;
+    top: $width;
+    left: $width;
+    right: $width;
+    bottom: $width;
+    outline: $width solid;
+    @include unshiftClass(".btbuild_rgba"){
+      outline-color: rgba($color, $opacity);
+    };
+    @include unshiftClass(".btbuild_no-rgba"){
+      outline-color:lighten($color, 50%);
+    };
+  }
+}
+
+@mixin addCommonImgBrighter(){
+  &{
+    position: relative;
+  }
+  &:before{
+    display: none;
+    content:" ";
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    background-image: url(http://resource.a0bi.com/marketnew/common/dest/scss/img_s/alpha20.png);
+  }
+  &:hover:before{
+    display: block;
+  }
+}

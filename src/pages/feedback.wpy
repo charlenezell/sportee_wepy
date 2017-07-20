@@ -1,0 +1,83 @@
+<style>
+
+</style>
+
+<template>
+  <view class="page weui-flex" xmlns:wx="http://www.w3.org/1999/xhtml">
+    <view class="weui-panel weui-panel--panel1 weui-flex__item">
+      <form @submit="formSubmit">
+        <view class="weui-panel__hd">
+          亲爱的{{userInfo.nickName||'用户'}},何不花半分钟留下您看法？
+        </view>
+        <view class="weui-panel__bd">
+          <view class="weui-media-box weui-media-box_text">
+            <view class="weui-media-box__title">* 选择反馈类型:</view>
+            <view class="weui-media-box__desc">
+              <picker @change="bindPickerChange" value="{{typeIndex}}" range="{{type}}">
+                <view>{{type[typeIndex]}}</view>
+              </picker>
+            </view>
+          </view>
+          <view class="weui-media-box weui-media-box_text">
+            <view class="weui-media-box__title">* 我的看法:</view>
+            <view class="weui-media-box__desc">
+              <textarea class="weui-textarea" placeholder="不积跬步无以至千里~期待你的建议~" auto-focus maxlength="{{maxLength}}" style="height: 3.3em" @input="inputTextarea" />
+              <view class="weui-textarea-counter">{{wordcount}}/{{maxLength}}</view>
+            </view>
+          </view>
+        </view>
+        <view class="weui-panel__ft">
+          <view class="weui-media-box weui-media-box_text">
+            <view class="weui-media-box__bd">
+              <button class="weui-btn" formType="submit" type="primary">提交</button>
+            </view>
+            <button class="weui-btn" type="default" @tap="backtolastpage">返回</button>
+          </view>
+        </view>
+      </form>
+    </view>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+export default class extends wepy.page {
+  data = {
+    typeIndex: 0,
+    maxLength: 200,
+    type: ['新需求', 'bug', '优化建议'],
+    userInfo: {},
+    words: ""
+  }
+
+  computed = {
+    wordcount(){
+      return this.words.length
+    }
+  }
+
+  methods = {
+    backtolastpage() {
+      this.$parent.backtolastpage();
+    },
+    inputTextarea(e) {
+      this.words=e.detail.value
+    },
+    formSubmit(e) {
+      console.log({
+        words: this.words,
+        type: this.typeIndex
+      });
+    },
+    bindPickerChange(e) {
+      this.typeIndex=e.detail.value;
+    }
+  }
+
+  onload() {
+    this.$parent.getUserInfo(data => {
+      this.userInfo=data;
+    })
+  }
+}
+</script>
