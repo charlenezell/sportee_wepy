@@ -1,128 +1,111 @@
 <style>
-.group {
-    background: blue;
-    display: flex;
-    flex-wrap: wrap;
-    margin-bottom: 10rpx;
+page {
+    height: 100%;
 }
 
-.groupItem {
-    font-size: 16px;
-    font-family: "Arial";
-    background-color: yellow;
-    border-radius: 300px;
-    width: 120rpx;
-    margin-right: 20rpx;
-    margin-bottom: 20rpx;
-    height: 120rpx;
-    line-height: 120rpx;
+.actions {
+    position: relative;
+    height: 100%;
+}
+
+.actionsItem {
+    border-radius: 100rpx;
+    background-color: red;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 140rpx;
+    height: 140rpx;
+    font-size: 12px;
+    line-height: 140rpx;
     text-align: center;
+    margin-left: -70rpx;
+    margin-top: -70rpx;
+    transform-origin: 50% 50%;
+    animation-fill-mode: forwards;
+    opacity: 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    font-family: Arial;
+    color: #fff;
+}
+
+.actionsItem--back {
+    opacity: 1;
+    background-color: blue;
 }
 </style>
 
 <template>
-    <view class="page weui-flex" xmlns:wx="http://www.w3.org/1999/xhtml">
-        <view class="weui-panel weui-panel--panel1 weui-flex__item">
-            <form @submit="formSubmit">
-                <view class="weui-panel__hd">
-                    你需要如何分组？
-                </view>
-                <view class="weui-panel__bd">
-                    <view class="weui-media-box weui-media-box_text">
-                        <view class="weui-media-box__title">* 你有多少人？</view>
-                        <view class="weui-media-box__desc">
-                            <slider @change="totalPeopleChange" show-value max="50" value="{{totalPeople}}" />
-                        </view>
-                    </view>
-                    <view class="weui-media-box weui-media-box_text">
-                        <view class="weui-media-box__title">* 要分多少组？</view>
-                        <view class="weui-media-box__desc">
-                            <picker @change="bindPickerChange" value="{{groupIndex}}" range="{{groupTo}}">
-                                <view>我要分{{groupIndex}}组</view>
-                                <view>每组{{calPerGroup||0}}人</view>
-                                <block wx:for="{{previewData}}" wx:for-index="gidx" wx:key={{index}}>
-                                    <view class="group">
-                                        <block wx:for="{{item}}" wx:key={{index}}>
-                                            <view class="groupItem">{{item}}</view>
-                                        </block>
-                                    </view>
-                                </block>
-                            </picker>
-                        </view>
-                    </view>
-                </view>
-            </form>
-        </view>
-        <!-- <button formType="reset">重填</button> -->
+    <view class="actions">
+        <block wx:for="{{actions}}" wx:key="{{index}}">
+            <navigator url="{{item.nav}}" class="actionsItem" animation="{{animationData[index]}}">
+                {{item.name}}
+            </navigator>
+        </block>
+        <view class="actionsItem actionsItem--back" @tap="backUrl">back</view>
     </view>
 </template>
 
 <script>
 import wepy from 'wepy'
-const defTotal = 6;
+import {
+    getPos
+} from '../../util/circleposition'
 
 export default class extends wepy.page {
-    randomArray(array, pergroupNumber) {
-        let b = [];
-        for (let a = 0; a < array.length * pergroupNumber; a++) {
-            b.push(a + 1);
-        }
-        b.sort(() => {
-            return Math.random() > 0.5 ? 1 : -1
-        });
-        let g = array.map(function () {
-            return b.splice(0, pergroupNumber).sort((a, b) => {
-                return a > b ? 1 : -1
-            });
-        })
-        return g;
-    }
-
-    getGroup(t) {
-        let a = []
-        for (let g = 1; g <= t; g++) {
-            if (t % g == 0) {
-                a.push(g);
-            }
-        }
-        return a;
-    }
-
-    initGroup = this.getGroup(defTotal)
-
-
+    actions = [{
+        name: "Grouping",
+        nav: "/pages/basketball/action/grouping/index"
+    }/* , {
+  name: "MatchTime",
+  nav: "/pages/basketball/action/matchtime/index"
+} */, {
+        name: "others",
+        nav: "/pages/feedback/index"
+    }, {
+        name: "others",
+        nav: "/pages/feedback/index"
+    }, {
+        name: "others",
+        nav: "/pages/feedback/index"
+    }, {
+        name: "others",
+        nav: "/pages/feedback/index"
+    }, {
+        name: "others",
+        nav: "/pages/feedback/index"
+    }, {
+        name: "others",
+        nav: "/pages/feedback/index"
+    }];
     data = {
-        totalPeople: defTotal,
-        groupTo: this.initGroup,
-        groupIndex: this.initGroup[0],
-        calPerGroup: defTotal / this.initGroup[0],
-        previewData: this.randomArray(new Array(this.initGroup[0]).fill(0), defTotal / this.initGroup[0])
+        actions: this.actions,
+        rotateDeg: 0,
+        animationData:[]
     }
-
+    p=0;
     methods = {
-        bindPickerChange(e) {
-            let g = this.getGroup(this.data.totalPeople)
-            Object.assign(this,{
-                groupTo: g,
-                groupIndex: g[e.detail.value],
-                calPerGroup: this.data.totalPeople / g[e.detail.value],
-                previewData: this.randomArray(new Array(g[e.detail.value]).fill(0), this.data.totalPeople / g[e.detail.value])
-            })
-        },
-        totalPeopleChange(e) {
-            let g = this.getGroup(e.detail.value)
-            Object.assign(this,{
-                totalPeople: e.detail.value,
-                groupTo: g,
-                groupIndex: g[0],
-                calPerGroup: e.detail.value / g[0],
-                previewData: this.randomArray(new Array(g[0]).fill(0), e.detail.value / g[0])
-            })
+        backUrl(){
+            this.$parent.backtolastpage();
         }
     }
 
-    onload() {
-
+    onLoad() {
+        setTimeout(() => {
+            this.actions.forEach((v, k) => {
+                var animation = wx.createAnimation({
+                    duration: 500,
+                    timingFunction: 'ease',
+                });
+                let [x, y] = getPos(this.actions.length, this.p);
+                this.p++;
+                animation.translate(x, -y).opacity(1).step();
+                this["animationData"][k]=animation.export();
+            });
+            this.$apply();
+        }, 100);
     }
 }
 </script>

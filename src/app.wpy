@@ -45,6 +45,8 @@ export default class extends wepy.app {
     //  let g = wx.getSystemInfoSync();
   }
 
+  globalData = {};
+
   getUserInfo(cb) {
     if (this.globalData.userInfo) {
       cb(this.globalData.userInfo);

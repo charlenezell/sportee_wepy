@@ -63,7 +63,7 @@ export default class extends wepy.page {
     inputTextarea(e) {
       this.words=e.detail.value
     },
-    formSubmit(e) {
+    formSubmit() {
       console.log({
         words: this.words,
         type: this.typeIndex
@@ -74,7 +74,7 @@ export default class extends wepy.page {
     }
   }
 
-  onload() {
+  onLoad() {
     this.$parent.getUserInfo(data => {
       this.userInfo=data;
     })
