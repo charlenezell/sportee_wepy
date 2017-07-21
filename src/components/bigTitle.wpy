@@ -1,0 +1,25 @@
+<style type="scss">
+@import "../style/variables";
+@import "../style/lib/mixin";
+.bigTitle {
+  font-size: $fz_title;
+  text-align: center;
+}
+</style>
+<template>
+  <view class="bigTitle">{{title}}</view>
+</template>
+<script>
+import wepy from 'wepy'
+
+export default class extends wepy.component {
+  props = {
+    title:String
+  }
+  methods={
+    inputTextarea(e){
+      this.title=e.detail.value;
+    }
+  }
+}
+</script>

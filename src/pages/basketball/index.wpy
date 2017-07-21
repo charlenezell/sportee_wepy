@@ -38,6 +38,7 @@ page {
 </style>
 
 <template>
+    <b1 :title.sync="title"></b1>
     <view class="actions">
         <block wx:for="{{actions}}" wx:key="{{index}}">
             <navigator url="{{item.nav}}" class="actionsItem" animation="{{animationData[index]}}">
@@ -50,44 +51,49 @@ page {
 
 <script>
 import wepy from 'wepy'
+import BigTitle from '../../components/bigTitle'
 import {
     getPos
 } from '../../util/circleposition'
 
 export default class extends wepy.page {
+    components = {
+        b1: BigTitle
+    }
     actions = [{
         name: "Grouping",
-        nav: "/pages/basketball/action/grouping/index"
+        nav: "/pages/basketball/grouping"
     }/* , {
   name: "MatchTime",
   nav: "/pages/basketball/action/matchtime/index"
 } */, {
         name: "others",
-        nav: "/pages/feedback/index"
+        nav: "/pages/feedback"
     }, {
         name: "others",
-        nav: "/pages/feedback/index"
+        nav: "/pages/feedback"
     }, {
         name: "others",
-        nav: "/pages/feedback/index"
+        nav: "/pages/feedback"
     }, {
         name: "others",
-        nav: "/pages/feedback/index"
+        nav: "/pages/feedback"
     }, {
         name: "others",
-        nav: "/pages/feedback/index"
+        nav: "/pages/feedback"
     }, {
         name: "others",
-        nav: "/pages/feedback/index"
+        nav: "/pages/feedback"
     }];
     data = {
         actions: this.actions,
         rotateDeg: 0,
-        animationData:[]
+        animationData: [],
+        title:"篮球"
     }
-    p=0;
+    p = 0;
     methods = {
-        backUrl(){
+        backUrl() {
             this.$parent.backtolastpage();
         }
     }
@@ -102,10 +108,10 @@ export default class extends wepy.page {
                 let [x, y] = getPos(this.actions.length, this.p);
                 this.p++;
                 animation.translate(x, -y).opacity(1).step();
-                this["animationData"][k]=animation.export();
+                this["animationData"][k] = animation.export();
             });
             this.$apply();
-        }, 100);
+        }, 200);
     }
 }
 </script>

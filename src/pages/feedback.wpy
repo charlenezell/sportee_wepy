@@ -3,7 +3,7 @@
 </style>
 
 <template>
-  <view class="page weui-flex" xmlns:wx="http://www.w3.org/1999/xhtml">
+  <view class="page weui-flex">
     <view class="weui-panel weui-panel--panel1 weui-flex__item">
       <form @submit="formSubmit">
         <view class="weui-panel__hd">
@@ -21,7 +21,7 @@
           <view class="weui-media-box weui-media-box_text">
             <view class="weui-media-box__title">* 我的看法:</view>
             <view class="weui-media-box__desc">
-              <textarea class="weui-textarea" placeholder="不积跬步无以至千里~期待你的建议~" auto-focus maxlength="{{maxLength}}" style="height: 3.3em" @input="inputTextarea" />
+              <textarea class="weui-textarea" placeholder="不积跬步无以至千里~期待你的建议~" maxlength="{{maxLength}}" style="height: 3.3em" @input="inputTextarea" />
               <view class="weui-textarea-counter">{{wordcount}}/{{maxLength}}</view>
             </view>
           </view>

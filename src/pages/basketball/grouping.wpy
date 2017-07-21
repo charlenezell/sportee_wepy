@@ -21,7 +21,8 @@
 </style>
 
 <template>
-    <view class="page weui-flex" xmlns:wx="http://www.w3.org/1999/xhtml">
+    <b1 :title.sync="title"></b1>
+    <view class="page weui-flex">
         <view class="weui-panel weui-panel--panel1 weui-flex__item">
             <form @submit="formSubmit">
                 <view class="weui-panel__hd">
@@ -59,9 +60,13 @@
 
 <script>
 import wepy from 'wepy'
+import BigTitle from '../../components/bigTitle'
 const defTotal = 6;
 
 export default class extends wepy.page {
+    components = {
+        b1: BigTitle
+    }
     randomArray(array, pergroupNumber) {
         let b = [];
         for (let a = 0; a < array.length * pergroupNumber; a++) {
@@ -92,6 +97,7 @@ export default class extends wepy.page {
 
 
     data = {
+        title: "分组",
         totalPeople: defTotal,
         groupTo: this.initGroup,
         groupIndex: this.initGroup[0],
@@ -102,7 +108,7 @@ export default class extends wepy.page {
     methods = {
         bindPickerChange(e) {
             let g = this.getGroup(this.data.totalPeople)
-            Object.assign(this,{
+            Object.assign(this, {
                 groupTo: g,
                 groupIndex: g[e.detail.value],
                 calPerGroup: this.data.totalPeople / g[e.detail.value],
@@ -111,7 +117,7 @@ export default class extends wepy.page {
         },
         totalPeopleChange(e) {
             let g = this.getGroup(e.detail.value)
-            Object.assign(this,{
+            Object.assign(this, {
                 totalPeople: e.detail.value,
                 groupTo: g,
                 groupIndex: g[0],

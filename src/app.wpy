@@ -13,23 +13,18 @@ import 'wepy-async-function'
 
 export default class extends wepy.app {
 
-  gameTypeRegistry = [{
-    name: "Basketball",
-    nav: "/pages/basketball/index",
-    icon: "/resource/image/basketball/icon.png"
-  }]
-
   config = {
     pages: [
       'pages/index',
+      "pages/basketball/grouping",
+      'pages/basketball/index',
       'pages/feedback',
-      'pages/basketball/index'
     ],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
       navigationBarTitleText: 'WeChat',
-      navigationBarTextStyle: 'black'
+      navigationBarTextStyle: 'black',
     }
   }
 
@@ -37,12 +32,26 @@ export default class extends wepy.app {
     super()
     this.use('requestfix')
   }
-  backtolastpage() {
-    wx.navigateBack();
-  }
+
   onLaunch() {
+    console.log('app', this.$wxapp);
     // this.testAsync()
     //  let g = wx.getSystemInfoSync();
+  }
+
+
+  backtolastpage() {
+    if (getCurrentPages().length > 1) {
+      wx.navigateBack();
+    } else {
+      wx.showToast({
+        title: '过去已无法返回',
+        image:"/resource/image/index/empty.png",
+        duration: 1000,
+        mask:true
+      })
+    }
+
   }
 
   globalData = {};
@@ -61,30 +70,5 @@ export default class extends wepy.app {
       }
     })
   }
-  // sleep(s) {
-  //   return new Promise((resolve) => {
-  //     setTimeout(() => {
-  //       resolve('promise resolved')
-  //     }, s * 1000)
-  //   })
-  // }
-
-  // async testAsync() {
-  //   const data = await this.sleep(3)
-  //   console.log(data)
-  // }
-
-  // getUserInfo(cb) {
-  //   const that = this
-  //   if (this.globalData.userInfo) {
-  //     return this.globalData.userInfo
-  //   }
-  //   wepy.getUserInfo({
-  //     success(res) {
-  //       that.globalData.userInfo = res.userInfo
-  //       cb && cb(res.userInfo)
-  //     }
-  //   })
-  // }
 }
 </script>

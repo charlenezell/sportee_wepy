@@ -1,11 +1,10 @@
-<style>
-.gameList {
-  width: 100%;
-}
+<style lang="scss">
+
 </style>
 
 <template>
   <view class="container">
+    <b1 :title.sync="title"></b1>
     <view class="gameList weui-grids">
       <block wx:for="{{gameList}}" wx:key="{{index}}">
         <navigator url="{{item.nav}}" class="gameItem weui-grid" hover-class="weui-grid_active">
@@ -19,31 +18,44 @@
 
 <script>
 import wepy from 'wepy'
+import BigTitle from '../components/bigTitle'
 export default class extends wepy.page {
   data = {
+    title:"类别选择：",
     userInfo: {},
-    gameList:[]
+    entry: [{
+      name: "Basketball",
+      nav: "/pages/basketball/index",
+      icon: "/resource/image/basketball/icon.png"
+    }]
   }
+  methods={
 
-  parseGridViewData() {
-    let left = this.$parent.gameTypeRegistry.length % 3
-    let r = this.$parent.gameTypeRegistry.concat([])
-    if (left !== 0) {
-      for (let a = 0; a < 3 - left; a++) {
-        r.push({
-          name: '期待你的建议',
-          icon: '/resource/image/index/empty.png',
-          nav: '/pages/feedback'
-        })
+  }
+  components = {
+    b1: BigTitle
+  }
+  computed = {
+    gameList() {
+      let left = this.entry.length % 3
+      let r = this.entry.concat([])
+      if (left !== 0) {
+        for (let a = 0; a < 3 - left; a++) {
+          r.push({
+            name: '期待你的建议',
+            icon: '/resource/image/index/empty.png',
+            nav: '/pages/feedback'
+          })
+        }
+        return r
+      } else {
+        return r
       }
-      return r
-    } else {
-      return r
     }
   }
 
   onLoad() {
-    this.gameList=this.parseGridViewData()
+
   }
 }
 </script>
